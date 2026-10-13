@@ -1,57 +1,91 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import { Card, H, Sub, Chip, Impact, Header, Btn, Row, C } from '../ui';
+import React, { useEffect, useState } from 'react';
+import { View, ScrollView, Pressable } from 'react-native';
+import { T, Card, Btn, Chip, Row, Pill, Progress, IconCircle, Ionicons } from '../ui';
+import { useTheme } from '../theme';
+import { useNav } from '../nav';
+import { api } from '../api';
 
-const STATIONS = [
-  { id: 1, name: 'Mall Kuningan City', km: 1.2, queue: 5, plugs: 8, partner: 'Mitra Mall', slots: ['18:00', '18:30', '19:00'], ai: 92 },
-  { id: 2, name: 'SPBU Tebet Raya', km: 3.4, queue: 28, plugs: 2, partner: 'SPBU', slots: ['19:30', '20:00'], ai: 40 },
-  { id: 3, name: 'Apartemen Casablanca', km: 4.8, queue: 10, plugs: 6, partner: 'Properti', slots: ['18:15', '19:15', '20:15'], ai: 78 },
-];
+const hourNow = () => new Date().getHours();
+
+function MapView({ stations, selected, onSelect }) {
+  const th = useTheme();
+  return (
+    <View style={{ height: 210, borderRadius: 22, backgroundColor: th.surface2, overflow: 'hidden', marginBottom: 14 }}>
+      {[20, 40, 60, 80].map((p) => (
+        <View key={'h' + p} style={{ position: 'absolute', left: 0, right: 0, top: `${p}%`, height: 1, backgroundColor: th.line }} />
+      ))}
+      {[25, 50, 75].map((p) => (
+        <View key={'v' + p} style={{ position: 'absolute', top: 0, bottom: 0, left: `${p}%`, width: 1, backgroundColor: th.line }} />
+      ))}
+      <View style={{ position: 'absolute', left: '50%', top: '52%', marginLeft: -7, marginTop: -7, width: 14, height: 14, borderRadius: 7, backgroundColor: '#3B82F6', borderWidth: 3, borderColor: '#fff' }} />
+      {stations.map((s) => {
+        const good = s.wait <= 15;
+        const on = selected === s.id;
+        return (
+          <Pressable key={s.id} onPress={() => onSelect(s.id)} style={{ position: 'absolute', left: `${s.x}%`, top: `${s.y}%`, marginLeft: -20, marginTop: -16, alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: good ? th.primary : th.danger, borderRadius: 14, paddingVertical: 5, paddingHorizontal: 9, borderWidth: on ? 3 : 0, borderColor: th.ink }}>
+              <Ionicons name="flash" size={12} color="#fff" />
+              <T v="small" color="#fff" style={{ fontWeight: '700', marginLeft: 3 }}>{s.wait}m</T>
+            </View>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
 
 export default function Charge() {
-  const [booked, setBooked] = useState(null);
-  const [open, setOpen] = useState(null);
+  const { openSheet } = useNav();
+  const th = useTheme();
+  const [hour, setHour] = useState(hourNow());
+  const [data, setData] = useState(null);
+  const [sel, setSel] = useState(null);
+
+  useEffect(() => { let on = true; api.chargers(hour).then((d) => on && setData(d)); return () => { on = false; }; }, [hour]);
+
+  const hours = [{ h: hourNow(), l: 'Sekarang' }, ...[18, 19, 21].filter((h) => h !== hourNow()).map((h) => ({ h, l: `${h}.00` }))];
 
   return (
-    <View>
-      <Header letter="C" word="Charge" ai problem="42% pengguna sulit cari charger, antre 25–40 menit." />
-      <Card>
-        <H>Charger terdekat</H>
-        <Sub>Skor AI = kecocokan lokasi dengan permintaan & kapasitas. Booking slot untuk menghindari antre.</Sub>
-        {STATIONS.map((s) => (
-          <View key={s.id} style={{ borderTopWidth: 1, borderTopColor: C.line, paddingVertical: 10 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ fontWeight: '700', color: C.ink }}>{s.name}</Text>
-              <Text style={{ color: C.mute }}>{s.km} km</Text>
-            </View>
-            <Text style={{ color: s.queue > 15 ? C.danger : C.primaryDark, marginTop: 2 }}>
-              Antre ±{s.queue} menit · {s.plugs} colokan · skor AI {s.ai}
-            </Text>
-            <Text style={{ color: C.mute, fontSize: 12 }}>Dibangun bersama {s.partner}</Text>
-            <Btn kind="ghost" title={open === s.id ? 'Tutup' : 'Pilih slot'} onPress={() => setOpen(open === s.id ? null : s.id)} />
-            {open === s.id && (
-              <Row>
-                {s.slots.map((t) => (
-                  <Chip key={t} label={t} active={booked && booked.id === s.id && booked.t === t} onPress={() => setBooked({ id: s.id, t, name: s.name })} />
-                ))}
+    <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+      <T v="caps" sub>Charge · AI</T>
+      <T v="display" style={{ marginTop: 4, marginBottom: 4 }}>Isi daya tanpa antre</T>
+      <T v="body" sub style={{ marginBottom: 16 }}>Prediksi antrean memakai pola jam sibuk dan kapasitas tiap stasiun.</T>
+
+      <Row>{hours.map((o) => <Chip key={o.l} label={o.l} icon={o.l === 'Sekarang' ? 'time-outline' : undefined} active={hour === o.h} onPress={() => setHour(o.h)} />)}</Row>
+
+      {!data ? <T v="body" sub style={{ marginVertical: 40, textAlign: 'center' }}>Memuat stasiun…</T> : (
+        <>
+          <MapView stations={data.stations} selected={sel} onSelect={setSel} />
+          {data.stations.map((s) => (
+            <Card key={s.id} onPress={() => setSel(s.id)} style={sel === s.id ? { borderWidth: 2, borderColor: th.primary } : null}>
+              <Row style={{ flexWrap: 'nowrap', alignItems: 'flex-start' }}>
+                <IconCircle name="flash-outline" tone={s.wait <= 15 ? 'primary' : 'danger'} />
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  <T v="heading" style={{ fontSize: 17 }}>{s.name}</T>
+                  <T v="small" sub>{s.area} · {s.plugs} colokan · {s.kw} kW · mitra {s.partner}</T>
+                  <View style={{ marginTop: 8 }}>
+                    <Pill label={s.wait <= 15 ? `Antre ±${s.wait} menit` : `Ramai · antre ±${s.wait} menit`} tone={s.wait <= 15 ? 'primary' : 'danger'} icon="time-outline" />
+                  </View>
+                </View>
               </Row>
-            )}
-          </View>
-        ))}
-      </Card>
-      {booked && (
-        <Card style={{ borderColor: C.primary }}>
-          <H>Booking terkonfirmasi ✓</H>
-          <Text style={{ color: C.ink }}>{booked.name} · pukul {booked.t}</Text>
-        </Card>
+              <Btn kind="soft" title="Booking slot" icon="calendar-outline" style={{ marginTop: 14 }} onPress={() => openSheet('charge', { station: s })} />
+            </Card>
+          ))}
+
+          <T v="caps" sub style={{ marginTop: 16, marginBottom: 6 }}>Usulan lokasi baru · AI</T>
+          <T v="small" sub style={{ marginBottom: 12 }}>Dihitung dari permintaan terhadap kapasitas sekitar. Dibangun bersama partner agar capex per titik turun ±40%.</T>
+          {data.sites.map((s) => (
+            <Card key={s.id}>
+              <Row style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+                <T v="heading" style={{ fontSize: 16, flex: 1, paddingRight: 8 }}>{s.name}</T>
+                <Pill label={`Skor ${s.demand}`} tone="accent" />
+              </Row>
+              <View style={{ marginVertical: 10 }}><Progress pct={s.demand} color={th.accent} /></View>
+              <T v="small" sub>Charger terdekat {s.gapKm} km · calon mitra: {s.partner}</T>
+            </Card>
+          ))}
+        </>
       )}
-      <Card>
-        <H>Lokasi usulan AI (belum dibangun)</H>
-        <Text style={{ color: C.ink }}>• Parkir Stasiun MRT Cipete Raya: permintaan tinggi, 0 SPKLU dalam 2 km</Text>
-        <Text style={{ color: C.ink }}>• Rest area Tol Cikampek KM 57: rute mudik padat</Text>
-        <Text style={{ color: C.mute, marginTop: 6, fontSize: 12 }}>Dibangun bersama partner agar capex per titik turun 40%.</Text>
-      </Card>
-      <Impact>Antre ≤15 menit · Kesulitan cari charger 42% → 20% · Capex per titik -40%</Impact>
-    </View>
+    </ScrollView>
   );
 }

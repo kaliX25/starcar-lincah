@@ -1,62 +1,81 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Platform, SafeAreaView } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Pressable, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { C } from './src/ui';
-import Learn from './src/screens/Learn';
-import Installment from './src/screens/Installment';
-import Next from './src/screens/Next';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StoreProvider, useStore } from './src/store';
+import { NavCtx } from './src/nav';
+import { useTheme } from './src/theme';
+import { Ionicons, T } from './src/ui';
+import { SheetHost } from './src/sheets';
+import Welcome from './src/screens/Welcome';
+import Today from './src/screens/Today';
+import Advisor from './src/screens/Advisor';
 import Charge from './src/screens/Charge';
-import Assist from './src/screens/Assist';
-import Harvest from './src/screens/Harvest';
+import Garage from './src/screens/Garage';
 
 const TABS = [
-  { k: 'L', n: 'Learn', c: Learn },
-  { k: 'I', n: 'Installment', c: Installment },
-  { k: 'N', n: 'Next', c: Next },
-  { k: 'C', n: 'Charge', c: Charge },
-  { k: 'A', n: 'Assist', c: Assist },
-  { k: 'H', n: 'Harvest', c: Harvest },
+  { k: 'today', n: 'Hari ini', i: 'journal', c: Today },
+  { k: 'advisor', n: 'Bintang', i: 'sparkles', c: Advisor },
+  { k: 'charge', n: 'Charge', i: 'flash', c: Charge },
+  { k: 'garage', n: 'Garasi', i: 'car-sport', c: Garage },
 ];
 
-export default function App() {
-  const [i, setI] = useState(0);
-  const Screen = TABS[i].c;
+function Shell() {
+  const { state } = useStore();
+  const th = useTheme();
+  const insets = useSafeAreaInsets();
+  const [tab, setTab] = useState('today');
+  const [sheet, setSheet] = useState(null);
+  const nav = useMemo(() => ({
+    tab, go: setTab,
+    openSheet: (name, props) => setSheet({ name, props }),
+    closeSheet: () => setSheet(null),
+  }), [tab]);
+
+  if (!state.hydrated) return <View style={{ flex: 1, backgroundColor: th.bg }} />;
+  const Screen = TABS.find((t) => t.k === tab).c;
+
   return (
-    <SafeAreaView style={s.root}>
-      <StatusBar style="dark" />
-      <View style={s.top}>
-        <Text style={s.brand}>Star Car</Text>
-        <Text style={s.tag}>LINCAH · Sustainable Mobility</Text>
-      </View>
-      <ScrollView contentContainerStyle={s.body} key={i}>
-        <Screen />
-      </ScrollView>
-      <View style={s.tabs}>
-        {TABS.map((t, idx) => (
-          <Pressable key={t.k} style={s.tab} onPress={() => setI(idx)}>
-            <View style={[s.dot, idx === i && s.dotOn]}>
-              <Text style={[s.dotT, idx === i && { color: '#fff' }]}>{t.k}</Text>
+    <NavCtx.Provider value={nav}>
+      <View style={{ flex: 1, backgroundColor: th.bg, paddingTop: insets.top }}>
+        <StatusBar style={th.dark ? 'light' : 'dark'} />
+        {!state.onboarded ? <Welcome /> : (
+          <>
+            <View style={{ flex: 1 }}><Screen key={tab} /></View>
+            {tab === 'today' ? (
+              <Pressable onPress={() => nav.openSheet('actions')} style={{ position: 'absolute', right: 20, bottom: 92 + insets.bottom, width: 58, height: 58, borderRadius: 29, backgroundColor: th.primary, alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(11,143,99,0.4)' }}>
+                <Ionicons name="add" size={30} color={th.primaryInk} />
+              </Pressable>
+            ) : null}
+            <View style={{ flexDirection: 'row', backgroundColor: th.surface, paddingTop: 8, paddingBottom: 8 + insets.bottom, borderTopLeftRadius: 24, borderTopRightRadius: 24, boxShadow: `0 -6px 24px ${th.shadow}` }}>
+              {TABS.map((t) => {
+                const on = tab === t.k;
+                return (
+                  <Pressable key={t.k} onPress={() => setTab(t.k)} style={{ flex: 1, alignItems: 'center', paddingVertical: 4 }}>
+                    <Ionicons name={on ? t.i : `${t.i}-outline`} size={23} color={on ? th.primary : th.sub} />
+                    <T v="small" color={on ? th.primary : th.sub} style={{ fontSize: 11, marginTop: 2, fontWeight: on ? '700' : '500' }}>{t.n}</T>
+                  </Pressable>
+                );
+              })}
             </View>
-            <Text style={[s.tabT, idx === i && { color: C.primaryDark, fontWeight: '700' }]} numberOfLines={1}>{t.n}</Text>
-          </Pressable>
-        ))}
+          </>
+        )}
+        <SheetHost sheet={sheet} onClose={nav.closeSheet} />
       </View>
-    </SafeAreaView>
+    </NavCtx.Provider>
   );
 }
 
-const web = Platform.OS === 'web' ? { height: '100vh', maxWidth: 480, width: '100%', alignSelf: 'center' } : {};
-
-const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: C.bg, paddingTop: Platform.OS === 'android' ? 28 : 0, ...web },
-  top: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: C.card, borderBottomWidth: 1, borderBottomColor: C.line },
-  brand: { fontSize: 18, fontWeight: '800', color: C.primaryDark },
-  tag: { fontSize: 11, color: C.mute },
-  body: { padding: 16, paddingBottom: 32 },
-  tabs: { flexDirection: 'row', backgroundColor: C.card, borderTopWidth: 1, borderTopColor: C.line, paddingVertical: 6 },
-  tab: { flex: 1, alignItems: 'center' },
-  dot: { width: 30, height: 30, borderRadius: 15, backgroundColor: '#EEF3F1', alignItems: 'center', justifyContent: 'center' },
-  dotOn: { backgroundColor: C.primary },
-  dotT: { fontWeight: '800', color: C.mute },
-  tabT: { fontSize: 10, color: C.mute, marginTop: 2 },
-});
+export default function App() {
+  const th = useTheme();
+  const web = Platform.OS === 'web';
+  return (
+    <SafeAreaProvider>
+      <View style={{ flex: 1, backgroundColor: web ? (th.dark ? '#000' : '#E9E5DC') : th.bg, alignItems: 'center' }}>
+        <View style={[{ flex: 1, width: '100%', maxWidth: 480, overflow: 'hidden' }, web ? { height: '100vh', boxShadow: '0 0 60px rgba(0,0,0,0.12)' } : null]}>
+          <StoreProvider><Shell /></StoreProvider>
+        </View>
+      </View>
+    </SafeAreaProvider>
+  );
+}
