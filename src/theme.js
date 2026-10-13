@@ -1,4 +1,4 @@
-import { Platform, useColorScheme } from 'react-native';
+import { useColorScheme } from 'react-native';
 
 const light = {
   bg: '#FAF8F4', surface: '#FFFFFF', surface2: '#F2EFE9', ink: '#15211D', sub: '#6E7A75', line: '#EBE7DF',
@@ -13,5 +13,15 @@ const dark = {
 
 export const useTheme = () => (useColorScheme() === 'dark' ? dark : light);
 
-export const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, "Times New Roman", serif' });
-export const sans = Platform.select({ web: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif', default: undefined });
+// Poppins: satu keluarga font per ketebalan (dimuat di App.js).
+export const FONT_FILES = {
+  Poppins_400Regular: require('@expo-google-fonts/poppins/400Regular/Poppins_400Regular.ttf'),
+  Poppins_500Medium: require('@expo-google-fonts/poppins/500Medium/Poppins_500Medium.ttf'),
+  Poppins_600SemiBold: require('@expo-google-fonts/poppins/600SemiBold/Poppins_600SemiBold.ttf'),
+  Poppins_700Bold: require('@expo-google-fonts/poppins/700Bold/Poppins_700Bold.ttf'),
+};
+export const pf = (w) => {
+  const n = w === 'bold' ? 700 : parseInt(w, 10) || 400;
+  return n >= 700 ? 'Poppins_700Bold' : n >= 600 ? 'Poppins_600SemiBold' : n >= 500 ? 'Poppins_500Medium' : 'Poppins_400Regular';
+};
+export const sans = 'Poppins_400Regular';

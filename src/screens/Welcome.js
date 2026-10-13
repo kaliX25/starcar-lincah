@@ -22,7 +22,7 @@ export default function Welcome() {
           <Ionicons name="star" size={18} color="#F5C26B" />
           <T v="caps" color="rgba(255,255,255,0.85)" style={{ marginLeft: 8 }}>Star Car</T>
         </View>
-        <T v="display" color="#fff" style={{ fontSize: 40, lineHeight: 46 }}>Mobil listrik yang pas untuk harimu.</T>
+        <T v="display" color="#fff" style={{ fontSize: 34, lineHeight: 44 }}>Mobil listrik yang pas untuk harimu.</T>
         <T v="body" color="rgba(255,255,255,0.75)" style={{ marginTop: 14, fontSize: 17, lineHeight: 25 }}>
           Dari memilih, mencicil, mengisi daya, sampai menjual kembali. Satu aplikasi yang menemani seluruh perjalananmu.
         </T>

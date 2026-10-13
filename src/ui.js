@@ -1,23 +1,25 @@
 import React from 'react';
 import { View, Text, Pressable, Modal, ScrollView, Platform, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme, serif, sans } from './theme';
+import { useTheme, pf } from './theme';
 
 export { Ionicons };
 
 const VARIANTS = {
-  display: { fontFamily: serif, fontSize: 34, lineHeight: 40, fontWeight: '700', letterSpacing: -0.5 },
-  title: { fontFamily: serif, fontSize: 24, lineHeight: 30, fontWeight: '700', letterSpacing: -0.3 },
-  heading: { fontFamily: serif, fontSize: 19, lineHeight: 25, fontWeight: '700' },
-  body: { fontFamily: sans, fontSize: 15, lineHeight: 22 },
-  small: { fontFamily: sans, fontSize: 13, lineHeight: 18 },
-  caps: { fontFamily: sans, fontSize: 11, lineHeight: 14, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' },
-  num: { fontFamily: serif, fontSize: 28, lineHeight: 32, fontWeight: '700' },
+  display: { fontSize: 30, lineHeight: 38, fontWeight: '700', letterSpacing: -0.5 },
+  title: { fontSize: 21, lineHeight: 28, fontWeight: '700', letterSpacing: -0.3 },
+  heading: { fontSize: 17, lineHeight: 24, fontWeight: '600' },
+  body: { fontSize: 14, lineHeight: 22, fontWeight: '400' },
+  small: { fontSize: 12, lineHeight: 18, fontWeight: '400' },
+  caps: { fontSize: 11, lineHeight: 14, fontWeight: '600', letterSpacing: 1, textTransform: 'uppercase' },
+  num: { fontSize: 25, lineHeight: 32, fontWeight: '700' },
 };
 
 export function T({ v = 'body', sub, color, style, children, ...rest }) {
   const th = useTheme();
-  return <Text {...rest} style={[VARIANTS[v], { color: color || (sub ? th.sub : th.ink) }, style]}>{children}</Text>;
+  const flat = StyleSheet.flatten([VARIANTS[v], style]) || {};
+  const { fontWeight, ...others } = flat;
+  return <Text {...rest} style={[others, { fontFamily: pf(fontWeight), color: color || (sub ? th.sub : th.ink) }]}>{children}</Text>;
 }
 
 export function Card({ children, style, onPress, tone }) {
@@ -38,7 +40,7 @@ export function Btn({ title, onPress, kind = 'primary', icon, style, disabled })
   return (
     <Pressable onPress={disabled ? undefined : onPress} style={({ pressed }) => [{ backgroundColor: bg, opacity: disabled ? 0.45 : pressed ? 0.85 : 1, paddingVertical: 14, paddingHorizontal: 18, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }, style]}>
       {icon ? <Ionicons name={icon} size={18} color={fg} style={{ marginRight: 8 }} /> : null}
-      <Text style={{ color: fg, fontWeight: '700', fontSize: 15, fontFamily: sans }}>{title}</Text>
+      <Text style={{ color: fg, fontSize: 14, fontFamily: pf(600) }}>{title}</Text>
     </Pressable>
   );
 }
@@ -48,7 +50,7 @@ export function Chip({ label, active, onPress, icon, tone }) {
   return (
     <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 9, paddingHorizontal: 14, borderRadius: 20, marginRight: 8, marginBottom: 8, backgroundColor: active ? th.primary : tone === 'ghost' ? 'transparent' : th.surface2, borderWidth: tone === 'ghost' ? 1 : 0, borderColor: th.primary }}>
       {icon ? <Ionicons name={icon} size={14} color={active ? th.primaryInk : th.primary} style={{ marginRight: 6 }} /> : null}
-      <Text style={{ color: active ? th.primaryInk : tone === 'ghost' ? th.primary : th.ink, fontWeight: '600', fontSize: 13, fontFamily: sans }}>{label}</Text>
+      <Text style={{ color: active ? th.primaryInk : tone === 'ghost' ? th.primary : th.ink, fontSize: 12, fontFamily: pf(500) }}>{label}</Text>
     </Pressable>
   );
 }
@@ -62,7 +64,7 @@ export function Pill({ label, tone = 'primary', icon }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: bg, borderRadius: 12, paddingVertical: 4, paddingHorizontal: 9, alignSelf: 'flex-start' }}>
       {icon ? <Ionicons name={icon} size={12} color={fg} style={{ marginRight: 4 }} /> : null}
-      <Text style={{ color: fg, fontSize: 12, fontWeight: '700', fontFamily: sans }}>{label}</Text>
+      <Text style={{ color: fg, fontSize: 11, fontFamily: pf(600) }}>{label}</Text>
     </View>
   );
 }
@@ -93,7 +95,7 @@ export function Segmented({ options, value, onChange }) {
     <View style={{ flexDirection: 'row', backgroundColor: th.surface2, borderRadius: 14, padding: 4, marginBottom: 16 }}>
       {options.map((o) => (
         <Pressable key={o.key} onPress={() => onChange(o.key)} style={{ flex: 1, paddingVertical: 9, borderRadius: 11, alignItems: 'center', backgroundColor: value === o.key ? th.surface : 'transparent', boxShadow: value === o.key ? `0 2px 8px ${th.shadow}` : undefined }}>
-          <Text style={{ fontWeight: '700', fontSize: 13, color: value === o.key ? th.ink : th.sub, fontFamily: sans }}>{o.label}</Text>
+          <Text style={{ fontSize: 12, color: value === o.key ? th.ink : th.sub, fontFamily: pf(600) }}>{o.label}</Text>
         </Pressable>
       ))}
     </View>

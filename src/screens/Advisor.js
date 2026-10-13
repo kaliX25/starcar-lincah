@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, ScrollView, TextInput, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { T, Chip, Row, Ionicons, Pill } from '../ui';
-import { useTheme, sans } from '../theme';
+import { useTheme, pf } from '../theme';
 import { useStore } from '../store';
 import { api } from '../api';
 import RecCard from '../RecCard';
@@ -98,7 +98,7 @@ export default function Advisor() {
         <TextInput
           value={text} onChangeText={setText} onSubmitEditing={() => send()} returnKeyType="send"
           placeholder="Ketik pesan…" placeholderTextColor={th.sub}
-          style={{ flex: 1, backgroundColor: th.surface, color: th.ink, borderRadius: 22, paddingVertical: 12, paddingHorizontal: 18, fontSize: 15, fontFamily: sans, boxShadow: `0 2px 10px ${th.shadow}` }}
+          style={{ flex: 1, backgroundColor: th.surface, color: th.ink, borderRadius: 22, paddingVertical: 12, paddingHorizontal: 18, fontSize: 15, fontFamily: pf(400), boxShadow: `0 2px 10px ${th.shadow}` }}
         />
         <Pressable onPress={() => send()} style={{ width: 46, height: 46, borderRadius: 23, backgroundColor: th.primary, alignItems: 'center', justifyContent: 'center', marginLeft: 10, opacity: text.trim() && !busy ? 1 : 0.5 }}>
           <Ionicons name="arrow-up" size={22} color={th.primaryInk} />

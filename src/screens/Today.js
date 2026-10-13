@@ -28,7 +28,7 @@ function CarHero({ car }) {
         <Ionicons name="car-sport" size={150} color="rgba(255,255,255,0.07)" style={{ position: 'absolute', right: -16, top: 10 }} />
         <T v="caps" color="rgba(255,255,255,0.7)">{car.name}</T>
         <Row style={{ alignItems: 'flex-end', marginTop: 6 }}>
-          <T v="display" color="#fff" style={{ fontSize: 52, lineHeight: 56 }}>{car.battery}</T>
+          <T v="display" color="#fff" style={{ fontSize: 44, lineHeight: 52 }}>{car.battery}</T>
           <T v="heading" color="rgba(255,255,255,0.8)" style={{ marginBottom: 8, marginLeft: 4 }}>% · ±{km} km</T>
         </Row>
         <View style={{ marginTop: 10 }}><Progress pct={car.battery} color="#7FE3B8" height={10} /></View>

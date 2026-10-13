@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Pressable } from 'react-native';
 import { Sheet, T, Btn, Chip, Row, Card, Progress, IconCircle, Pill } from './ui';
-import { useTheme, sans } from './theme';
+import { useTheme, pf } from './theme';
 import { useStore } from './store';
 import { useNav } from './nav';
 import { api } from './api';
@@ -115,7 +115,7 @@ function TestDriveSheet({ onClose }) {
       <T v="body" sub style={{ marginBottom: 16 }}>Test drive di rute yang kamu lewati tiap hari, supaya terasa seperti pemakaian sebenarnya.</T>
       <Field label="Tanggal"><Row>{days.map((d) => <Chip key={d.ts} label={d.label} active={day.ts === d.ts} onPress={() => setDay(d)} />)}</Row></Field>
       <Field label="Rute harian (opsional)">
-        <TextInput value={route} onChangeText={setRoute} placeholder="mis. Bekasi → Sudirman" placeholderTextColor={th.sub} style={{ backgroundColor: th.surface, color: th.ink, borderRadius: 14, padding: 14, fontSize: 15, fontFamily: sans }} />
+        <TextInput value={route} onChangeText={setRoute} placeholder="mis. Bekasi → Sudirman" placeholderTextColor={th.sub} style={{ backgroundColor: th.surface, color: th.ink, borderRadius: 14, padding: 14, fontSize: 15, fontFamily: pf(400) }} />
       </Field>
       <Btn title={busy ? 'Menjadwalkan…' : 'Konfirmasi'} onPress={confirm} disabled={busy} />
     </>

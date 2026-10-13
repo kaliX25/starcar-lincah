@@ -48,7 +48,7 @@ function Baterai({ car, rec }) {
       <Card>
         <T v="caps" sub>Kesehatan baterai</T>
         <Row style={{ alignItems: 'flex-end', marginTop: 4 }}>
-          <T v="display" style={{ fontSize: 48, lineHeight: 52 }}>{car.soh}%</T>
+          <T v="display" style={{ fontSize: 40, lineHeight: 48 }}>{car.soh}%</T>
           <View style={{ marginBottom: 8, marginLeft: 10 }}><Pill label={`Grade ${grade}`} tone="primary" icon="ribbon-outline" /></View>
         </Row>
         <View style={{ marginVertical: 12 }}><Progress pct={car.soh} height={10} /></View>

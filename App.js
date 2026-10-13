@@ -4,7 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StoreProvider, useStore } from './src/store';
 import { NavCtx } from './src/nav';
-import { useTheme } from './src/theme';
+import { useFonts } from 'expo-font';
+import { useTheme, FONT_FILES } from './src/theme';
 import { Ionicons, T } from './src/ui';
 import { SheetHost } from './src/sheets';
 import Welcome from './src/screens/Welcome';
@@ -68,6 +69,8 @@ function Shell() {
 
 export default function App() {
   const th = useTheme();
+  const [fontsLoaded] = useFonts(FONT_FILES);
+  if (!fontsLoaded) return <View style={{ flex: 1, backgroundColor: th.bg }} />;
   const web = Platform.OS === 'web';
   return (
     <SafeAreaProvider>
