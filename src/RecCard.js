@@ -10,7 +10,7 @@ export default function RecCard({ rec, compact }) {
   const q = rec.quote;
   return (
     <View style={{ borderRadius: 24, overflow: 'hidden', marginBottom: 14 }}>
-      <LinearGradient colors={['#0B6E4F', '#0F3D4A']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 20 }}>
+      <LinearGradient colors={['#5B21B6', '#A21CAF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 20 }}>
         <Ionicons name="car-sport" size={120} color="rgba(255,255,255,0.08)" style={{ position: 'absolute', right: -10, top: 6 }} />
         <T v="caps" color="rgba(255,255,255,0.7)">Paket untukmu</T>
         <T v="display" color="#fff" style={{ marginTop: 4 }}>{rec.model.name}</T>

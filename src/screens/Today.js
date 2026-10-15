@@ -24,18 +24,18 @@ function CarHero({ car }) {
   const mins = Math.round(((80 - Math.min(car.battery, 80)) / 100) * car.kwh / 1.2);
   return (
     <View style={{ borderRadius: 26, overflow: 'hidden', marginBottom: 14 }}>
-      <LinearGradient colors={['#0B6E4F', '#0F3D4A']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 22 }}>
+      <LinearGradient colors={['#5B21B6', '#A21CAF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 22 }}>
         <Ionicons name="car-sport" size={150} color="rgba(255,255,255,0.07)" style={{ position: 'absolute', right: -16, top: 10 }} />
         <T v="caps" color="rgba(255,255,255,0.7)">{car.name}</T>
         <Row style={{ alignItems: 'flex-end', marginTop: 6 }}>
           <T v="display" color="#fff" style={{ fontSize: 44, lineHeight: 52 }}>{car.battery}</T>
           <T v="heading" color="rgba(255,255,255,0.8)" style={{ marginBottom: 8, marginLeft: 4 }}>% · ±{km} km</T>
         </Row>
-        <View style={{ marginTop: 10 }}><Progress pct={car.battery} color="#7FE3B8" height={10} /></View>
+        <View style={{ marginTop: 10 }}><Progress pct={car.battery} color="#E9D5FF" height={10} /></View>
         <T v="small" color="rgba(255,255,255,0.75)" style={{ marginTop: 10 }}>Ke 80% sekitar {mins} menit di charger cepat</T>
         <Row style={{ marginTop: 16 }}>
           <Pressable onPress={() => go('charge')} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 14, paddingVertical: 10, paddingHorizontal: 14, marginRight: 8 }}>
-            <Ionicons name="flash" size={15} color="#0B6E4F" style={{ marginRight: 6 }} /><T v="small" color="#0B6E4F" style={{ fontWeight: '700' }}>Cari charger</T>
+            <Ionicons name="flash" size={15} color="#5B21B6" style={{ marginRight: 6 }} /><T v="small" color="#5B21B6" style={{ fontWeight: '700' }}>Cari charger</T>
           </Pressable>
           <Pressable onPress={() => openSheet('service')} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.16)', borderRadius: 14, paddingVertical: 10, paddingHorizontal: 14 }}>
             <Ionicons name="construct" size={15} color="#fff" style={{ marginRight: 6 }} /><T v="small" color="#fff" style={{ fontWeight: '700' }}>Booking servis</T>

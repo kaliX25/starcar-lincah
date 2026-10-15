@@ -16,7 +16,7 @@ export default function Welcome() {
   const { go } = useNav();
   const start = () => { dispatch({ type: 'ONBOARD' }); go('advisor'); };
   return (
-    <LinearGradient colors={['#0A5F46', '#0F3D4A', '#0B2230']} style={{ flex: 1, padding: 28, justifyContent: 'space-between' }}>
+    <LinearGradient colors={['#2E0A66', '#6D28D9', '#B03AD9']} style={{ flex: 1, padding: 28, justifyContent: 'space-between' }}>
       <View style={{ marginTop: 40 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 28 }}>
           <Ionicons name="star" size={18} color="#F5C26B" />

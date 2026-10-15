@@ -44,7 +44,7 @@ function Shell() {
           <>
             <View style={{ flex: 1 }}><Screen key={tab} /></View>
             {tab === 'today' ? (
-              <Pressable onPress={() => nav.openSheet('actions')} style={{ position: 'absolute', right: 20, bottom: 92 + insets.bottom, width: 58, height: 58, borderRadius: 29, backgroundColor: th.primary, alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(11,143,99,0.4)' }}>
+              <Pressable onPress={() => nav.openSheet('actions')} style={{ position: 'absolute', right: 20, bottom: 92 + insets.bottom, width: 58, height: 58, borderRadius: 29, backgroundColor: th.primary, alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(124,58,237,0.45)' }}>
                 <Ionicons name="add" size={30} color={th.primaryInk} />
               </Pressable>
             ) : null}
@@ -74,7 +74,7 @@ export default function App() {
   const web = Platform.OS === 'web';
   return (
     <SafeAreaProvider>
-      <View style={{ flex: 1, backgroundColor: web ? (th.dark ? '#000' : '#E9E5DC') : th.bg, alignItems: 'center' }}>
+      <View style={{ flex: 1, backgroundColor: web ? (th.dark ? '#000' : '#E4DAF7') : th.bg, alignItems: 'center' }}>
         <View style={[{ flex: 1, width: '100%', maxWidth: 480, overflow: 'hidden' }, web ? { height: '100vh', boxShadow: '0 0 60px rgba(0,0,0,0.12)' } : null]}>
           <StoreProvider><Shell /></StoreProvider>
         </View>
